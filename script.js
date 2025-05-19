@@ -1,9 +1,4 @@
-let ideas = [
-    { id: 1, title: "Build a synthesizer", tags: ["Music", "Programming"] },
-    { id: 2, title: "Write a Torah quiz", tags: ["Chabad", "Education"] },
-    { id: 3, title: "Create a fundraiser", tags: ["Personal", "Web Development"] },
-    { id: 4, title: "Organize microtonal scales", tags: ["Music", "Web App"] }
-];
+let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
 
 const ideasContainer = document.getElementById("ideas-container");
 const searchInput = document.getElementById("searchInput");
@@ -29,9 +24,15 @@ function displayIdeas(filteredIdeas) {
         editButton.textContent = "Edit";
         editButton.onclick = () => editIdea(idea.id);
 
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add("delete-btn");
+        deleteButton.onclick = () => deleteIdea(idea.id);
+
         ideaCard.appendChild(ideaTitle);
         ideaCard.appendChild(ideaTags);
         ideaCard.appendChild(editButton);
+        ideaCard.appendChild(deleteButton);
 
         ideasContainer.appendChild(ideaCard);
     });
@@ -68,6 +69,7 @@ function addIdea() {
 
     ideaTitle.value = "";
     ideaTags.value = "";
+    saveIdeas();
     displayIdeas(ideas);
 }
 
@@ -78,6 +80,16 @@ function editIdea(id) {
         ideaTitle.value = idea.title;
         ideaTags.value = idea.tags.join(", ");
     }
+}
+
+function deleteIdea(id) {
+    ideas = ideas.filter(idea => idea.id !== id);
+    saveIdeas();
+    displayIdeas(ideas);
+}
+
+function saveIdeas() {
+    localStorage.setItem("ideas", JSON.stringify(ideas));
 }
 
 displayIdeas(ideas);
